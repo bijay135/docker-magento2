@@ -4,7 +4,7 @@ services:
     nginx:
         image: nginx:1.16.1
         container_name: nginx
-        restart: always
+        restart: unless-stopped
         ports:
             - "80:80"
             - "443:443"  
@@ -19,7 +19,7 @@ services:
         build: ./server
         image: magento-php:7.2-fpm
         container_name: php
-        restart: always
+        restart: unless-stopped
         volumes:
             - ./server/php/php.ini:/usr/local/etc/php/conf.d/php.ini
             - /home/bijay/html:/var/www/html
@@ -27,7 +27,7 @@ services:
     mysql:
         image: mysql:5.7
         container_name: mysql       
-        restart: always
+        restart: unless-stopped
         ports: 
             - "3306:3306"
         environment:
