@@ -9,7 +9,7 @@ services:
             - "443:443"  
         volumes:
             - ./server/nginx/default.conf:/etc/nginx/conf.d/default.conf
-            - /home/bijay/html:/var/www/html
+            - /home/$user/html:/var/www/html
         links:
             - php
             - mysql
@@ -20,7 +20,7 @@ services:
         container_name: php
         volumes:
             - ./server/php/php.ini:/usr/local/etc/php/conf.d/php.ini
-            - /home/bijay/html:/var/www/html
+            - /home/$user/html:/var/www/html
            
     mysql:
         image: mysql:5.7
@@ -29,7 +29,7 @@ services:
             - "3306:3306"
         environment:
             MYSQL_ROOT_PASSWORD: f4m5kyb8R34zx5a
-            MYSQL_USER: Bijay
+            MYSQL_USER: $User
             MYSQL_PASSWORD: 5hKh5EVswD
             MYSQL_DATABASE: magento
         volumes:
