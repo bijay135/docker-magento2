@@ -20,7 +20,8 @@ services:
         container_name: php
         volumes:
             - ./server/php/php.ini:/usr/local/etc/php/conf.d/php.ini
-            - /home/$user/html:/var/www/html
+            - /home/$user/html:/var/www/html    
+            - /home/$user/.composer:/root/.composer
            
     mysql:
         image: mysql:5.7
