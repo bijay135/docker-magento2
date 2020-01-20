@@ -94,6 +94,7 @@ php_composer="docker exec -it -w /var/www/html/magento php composer"
 $php_composer create-project --repository=https://repo.magento.com/ magento/project-community-edition .
 
 ```
+- Enter the composer access keys from magento marketplace and save it
 
 ## Set proper file permissions
 ```
