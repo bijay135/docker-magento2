@@ -7,7 +7,7 @@
 
 # 1. Pre-Requistices
 
-## Create folders in host that will be mounted in docker containers
+## Create folders in host that will be mounted to docker containers
 - Replace the `$user` with your current user
 
 ```
@@ -67,7 +67,7 @@ services:
 
 ```
 
-Update the `$user` variable with your own user and save the file
+- Update the `$user` variable with your own user and save the file
 
 ## Run this command to build images and start the containers
 ```
@@ -77,12 +77,14 @@ docker-compose up -d
 # 3. Setup enviroment variables for easy commands
 - Open `/etc/enviroment/` in editor and add the following
 ```
-php_magento="docker exec -it php php /var/www/html/magento/bin/magento"
 lemp_stack="nginx php mysql"
+php_magento="docker exec -it -w /var/www/html/magento php php bin/magento"
+php_composer="docker exec -it -w /var/www/html/magento php composer"
 ```
 - Restart the computer
-- Now Magento 2 CLI can be used using `$php_magento command` example `$php_magento setup:upgrade`
-- Also all the containers in LEMP stack can be commanded using `docker command $lemp_stack` example `docker stop $lemp_stack`
+- Now all the containers in LEMP stack can be commanded using `docker command $lemp_stack` example `docker stop $lemp_stack`
+- Magento 2 CLI can be used using `$php_magento command` example `$php_magento setup:upgrade`
+- Composer can be used using `$php_composer command` example `$php_composer info`
 
 # 4. Install Magento 2 & Sample Data
 
