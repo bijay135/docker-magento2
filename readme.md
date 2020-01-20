@@ -8,7 +8,6 @@
 # 1. Pre-Requistices
 
 ## Create folders in host that will be mounted in docker containers
-
 - Replace the `$user` with your current user
 
 ```
@@ -20,7 +19,6 @@ sudo mkdir -p /var/lib/mysql
 ## Install Docker and Docker-Compose
 
 ## Get the composer access keys from Magento Marketplace
-
 [Composer access keys](https://devdocs.magento.com/guides/v2.3/install-gde/prereq/connect-auth.html)
 
 # 2. Follow these steps to setup the enviroment
@@ -76,7 +74,7 @@ Update the `$user` variable with your own user and save the file
 docker-compose up -d
 ```
 
-# 3. Setup enviroment variables for magento CLI and LEMP stack
+# 3. Setup enviroment variables for easy commands
 - Open `/etc/enviroment/` in editor and add the following
 ```
 php_magento="docker exec -it php php /var/www/html/magento/bin/magento"
@@ -89,7 +87,6 @@ lemp_stack="nginx php mysql"
 # 4. Install Magento 2 & Sample Data
 
 ## Use Composer to download latest Magento 2
-
 - Run this command to download latest Magento 2 
 ```
 $php_composer create-project --repository=https://repo.magento.com/ magento/project-community-edition .
@@ -97,7 +94,6 @@ $php_composer create-project --repository=https://repo.magento.com/ magento/proj
 ```
 
 ## Set proper file permissions
-
 ```
 cd /home/$user/html/magento
 find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
@@ -115,7 +111,6 @@ sudo chmod -R g+s magento/
 - Finish the wizard to sucessfully setup Magento 2
 
 ## Install Magento 2 sample data
-
 - Use this command to download sample data
 ```
 $php_magento sampledata:deploy
