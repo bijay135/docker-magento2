@@ -80,11 +80,15 @@ docker-compose up -d
 lemp_stack="nginx php mysql"
 php_magento="docker exec -it -w /var/www/html/magento php php bin/magento"
 php_composer="docker exec -it -w /var/www/html/magento php composer"
+php_npm="docker exec -it -w /var/www/html/magento php npm"
+php_grunt="docker exec -it -w /var/www/html/magento php grunt"
 ```
 - Restart the computer
 - Now all the containers in LEMP stack can be commanded using `docker command $lemp_stack` example `docker stop $lemp_stack`
 - Magento 2 CLI can be used using `$php_magento command` example `$php_magento setup:upgrade`
 - Composer can be used using `$php_composer command` example `$php_composer info`
+- Npm package manager can be used using `$php_npm command` example `$php_npm install`
+- Grunt can be used using `$php_grunt command` example `$php_grunt exec`
 
 # 4. Install Magento 2 & Sample Data
 
