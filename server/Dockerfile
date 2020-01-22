@@ -30,3 +30,11 @@ RUN docker-php-ext-install \
 # Install Composer
 ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install nodejs, npm and grunt-cli
+RUN apt-get install -y \ 
+    nodejs \
+    npm \
+    && npm install -g \ 
+    npm@latest \
+    grunt-cli
