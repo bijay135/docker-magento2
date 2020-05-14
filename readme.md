@@ -127,9 +127,3 @@ $php_magento sampledata:deploy
 $php_magento setup:upgrade
 ```
 Now you should have a fully working Magento 2 instance with sample data
-
-# 5. To-Do list
-
-- Setup redis for cache and session storage
-
-- Setup Varnish for php cache and reverse proxy
