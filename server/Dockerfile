@@ -18,6 +18,7 @@ RUN docker-php-ext-configure \
 
 # Install required PHP extensions
 RUN docker-php-ext-install \
+    sockets \
     bcmath \
     gd \
     intl \
