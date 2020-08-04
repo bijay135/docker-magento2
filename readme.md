@@ -28,7 +28,7 @@ sudo mkdir -p /usr/share/elasticsearch/data
 sudo chown -R 1000:1000 /usr/share/elasticsearch/data
 ```
 
-## Redis/Elasticsearch optmiization
+## Redis/Elasticsearch optimization
 - Open `/etc/sysctl.conf` and add these lines at the end
 ```
 # Elasticsearch Compatibility
