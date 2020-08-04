@@ -2,18 +2,55 @@
 
 # Technologies Used
 - Docker, Docker-Compose
-- LEMP stack
+- Nginx
+- PHP
+- Mysql
+- Elasticsearch
+- Redis
+- Npm , Grunt
 - Composer
 
 # 1. Pre-Requistices
 
 ## Create folders in host that will be mounted to docker containers
 - Replace the `$user` with your current user
-
 ```
 sudo mkdir -p /home/$user/html/magento
 sudo mkdir -p /home/$user/.composer
 sudo mkdir -p /var/lib/mysql
+sudo mkdir -p /var/lib/redis
+sudo mkdir -p /usr/share/elasticsearch/data
+```
+
+## Set correct folder permissions
+- Elasticsearch data needs `$user` as owner and group, `1000` will be resolved to current system user
+```
+sudo chown -R 1000:1000 /usr/share/elasticsearch/data
+```
+
+## Redis/Elasticsearch optmiization
+- Open `/etc/sysctl.conf` and add these lines at the end
+```
+# Elasticsearch Compatibility
+vm.max_map_count=262144
+
+# Redis Compatibility
+net.core.somaxconn=1024
+vm.overcommit_memory=1
+```
+- Create a new file `/etc/rc.local` and add this
+```
+#!/bin/bash
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+```
+- Make `rc.local` file executable
+```
+sudo chmod +x /etc/rc.local
+```
+- start `rc.local` service and verify that is active
+```
+sudo systemctl start rc.local
+sudo systemctl status rc.local
 ```
 
 ## Install Docker and Docker-Compose
@@ -35,21 +72,21 @@ services:
         container_name: nginx
         ports:
             - "80:80"
-            - "443:443"  
         volumes:
             - ./server/nginx/default.conf:/etc/nginx/conf.d/default.conf
-            - /home/$user/html:/var/www/html
-        links:
+            - /home/$user/html/magento:/var/www/html/magento
+        depends_on:
             - php
             - mysql
         
     php:
-        build: ./server
+        build: ./server/php
         image: magento-php:7.2-fpm
         container_name: php
         volumes:
             - ./server/php/php.ini:/usr/local/etc/php/conf.d/php.ini
-            - /home/$user/html:/var/www/html    
+            - ./server/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+            - /home/$user/html/magento:/var/www/html/magento    
             - /home/$user/.composer:/root/.composer
            
     mysql:
@@ -64,10 +101,29 @@ services:
             MYSQL_DATABASE: magento
         volumes:
             - /var/lib/mysql:/var/lib/mysql
+            - ./server/mysql/my.cnf:/etc/mysql/my.cnf
 
+    elasticsearch:
+        image: elasticsearch:6.8.0
+        container_name: elasticsearch       
+        ports: 
+            - "9200:9200"
+        environment:
+            ES_JAVA_OPTS: -Xms256m -Xmx256m
+        volumes:
+            - /usr/share/elasticsearch/data:/usr/share/elasticsearch/data
+
+    redis:
+        image: redis:5.0.7
+        container_name: redis       
+        ports: 
+            - "6379:6379"
+        volumes:
+            - /var/lib/redis:/data
+        sysctls:
+            net.core.somaxconn: 1024
 ```
-
-- Update the `$user` variable with your own user and save the file
+- Update the `$user` variable with your own user, change mysql `root` and `user` password if required and save the file
 
 ## Run this command to build images and start the containers
 ```
@@ -76,19 +132,22 @@ docker-compose up -d
 
 # 3. Setup enviroment variables for easy commands
 - Open `/etc/enviroment/` in editor and add the following
+- Replace `$path_to_docker_magento2` with correct path
 ```
-lemp_stack="nginx php mysql"
+magento_stack="docker-compose -f $path_to_docker_magento2/docker-compose.yml"
 php_magento="docker exec -it -w /var/www/html/magento php php bin/magento"
 php_composer="docker exec -it -w /var/www/html/magento php composer"
 php_npm="docker exec -it -w /var/www/html/magento php npm"
 php_grunt="docker exec -it -w /var/www/html/magento php grunt"
+redis_cli="docker exec -it redis redis-cli"
 ```
 - Restart the computer
-- Now all the containers in LEMP stack can be commanded using `docker command $lemp_stack` example `docker stop $lemp_stack`
+- Now all the containers in magento stack can be commanded using `$magento_stack command` example `$magento_stack start`
 - Magento 2 CLI can be used using `$php_magento command` example `$php_magento setup:upgrade`
 - Composer can be used using `$php_composer command` example `$php_composer info`
 - Npm package manager can be used using `$php_npm command` example `$php_npm install`
 - Grunt can be used using `$php_grunt command` example `$php_grunt exec`
+- Redis Cli can be used using `$redis_cli command` example `$redis_cli info`
 
 # 4. Install Magento 2 & Sample Data
 
@@ -96,13 +155,13 @@ php_grunt="docker exec -it -w /var/www/html/magento php grunt"
 - Run this command to download latest Magento 2 
 ```
 $php_composer create-project --repository=https://repo.magento.com/ magento/project-community-edition .
-
 ```
 - Enter the composer access keys from magento marketplace and save it
 
 ## Set proper file permissions
 ```
 cd /home/$user/html/magento
+
 find var generated vendor pub/static pub/media app/etc -type f -exec chmod g+w {} +
 find var generated vendor pub/static pub/media app/etc -type d -exec chmod g+ws {} +
 sudo chmod u+x bin/magento
@@ -110,6 +169,7 @@ sudo chmod u+x bin/magento
 
 ```
 cd /home/$user/html
+
 sudo chown -R www-data:www-data magento/
 sudo chmod -R 775 magento/
 sudo chmod -R g+s magento/
