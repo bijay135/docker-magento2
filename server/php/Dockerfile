@@ -10,14 +10,14 @@ RUN apt-get update && apt-get install -y \
     libxslt1-dev \ 
     sendmail-bin \ 
     sendmail \ 
-    sudo
-
+    sudo \
+\
 # Configure the gd library
-RUN docker-php-ext-configure \
-    gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
-
+ && docker-php-ext-configure \
+    gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+\
 # Install required PHP extensions
-RUN docker-php-ext-install \
+ && docker-php-ext-install \
     sockets \
     bcmath \
     gd \
@@ -26,16 +26,15 @@ RUN docker-php-ext-install \
     soap \
     xsl \
     zip \
-    pcntl
-
+    pcntl \
+\
 # Install Composer
-ENV COMPOSER_ALLOW_SUPERUSER 1
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
+ && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+\
 # Install nodejs, npm and grunt-cli
-RUN apt-get install -y \ 
+ && apt-get install -y \ 
     nodejs \
     npm \
-    && npm install -g \ 
+ && npm install -g \ 
     npm@latest \
     grunt-cli

@@ -8,7 +8,7 @@ services:
             - "80:80"
         volumes:
             - ./server/nginx/default.conf:/etc/nginx/conf.d/default.conf
-            - /home/$user/html/magento:/var/www/html/magento
+            - /home/bijay/html/magento:/var/www/html/magento
         depends_on:
             - php
             - mysql
@@ -17,11 +17,13 @@ services:
         build: ./server/php
         image: magento-php:7.2-fpm
         container_name: php
+        environment:
+            COMPOSER_ALLOW_SUPERUSER : 1
         volumes:
             - ./server/php/php.ini:/usr/local/etc/php/conf.d/php.ini
             - ./server/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
-            - /home/$user/html/magento:/var/www/html/magento    
-            - /home/$user/.composer:/root/.composer
+            - /home/bijay/html/magento:/var/www/html/magento    
+            - /home/bijay/.composer:/root/.composer
            
     mysql:
         image: mysql:5.7
@@ -30,7 +32,7 @@ services:
             - "3306:3306"
         environment:
             MYSQL_ROOT_PASSWORD: f4m5kyb8R34zx5a
-            MYSQL_USER: $User
+            MYSQL_USER: Bijay
             MYSQL_PASSWORD: 5hKh5EVswD
             MYSQL_DATABASE: magento
         volumes:
