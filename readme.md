@@ -7,7 +7,7 @@
 - Mysql
 - Elasticsearch
 - Redis
-- Npm , Grunt
+- Npm, Grunt
 - Composer
 
 # 1. Pre-Requistices
@@ -83,6 +83,8 @@ services:
         build: ./server/php
         image: magento-php:7.2-fpm
         container_name: php
+        environment:
+            COMPOSER_ALLOW_SUPERUSER : 1
         volumes:
             - ./server/php/php.ini:/usr/local/etc/php/conf.d/php.ini
             - ./server/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
