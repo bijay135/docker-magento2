@@ -10,6 +10,13 @@
 - Npm, Grunt
 - Composer
 
+# Contents Overview
+1. [Pre-Requistices](#1-pre-requistices)
+2. [Follow these steps to setup the enviroment](#2-follow-these-steps-to-setup-the-enviroment)
+3. [Setup enviroment variables for easy commands](#3-setup-enviroment-variables-for-easy-commands)
+4. [Install Magento 2 & Sample Data](#4-install-magento-2-sample-data)
+5. [Extra optimizations](#4-install-magento-2-sample-data)
+
 # 1. Pre-Requistices
 
 ## Create folders in host that will be mounted to docker containers
@@ -189,3 +196,30 @@ $php_magento sampledata:deploy
 $php_magento setup:upgrade
 ```
 Now you should have a fully working Magento 2 instance with sample data
+
+# 5. Extra optimizations
+
+## Elasticsearch replicas configuration
+- Elasticsearch tries to create an additional replica of each indexes by default on second node, since local development will only have one node this will never succeed.
+- This causes half the shards to be unassigned and cluster health to be yellow.
+- Use these commands to set default replica configuration to 0 for current and all future indexes.
+```
+# Replica setting for all new template
+curl -XPUT "localhost:9200/_template/default_template" -H 'Content-Type: application/json' -d'
+{
+ 	"index_patterns": ["*"],
+    "settings": {
+    	"index": {
+    		"number_of_replicas": 0
+    	}
+    }
+}'
+
+# Replica setting for current index
+curl -XPUT 'localhost:9200/_settings' -H 'Content-Type: application/json' -d '
+{ 
+	"index" : { 
+		"number_of_replicas" : 0 
+	} 
+}'
+```
