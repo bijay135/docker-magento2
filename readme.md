@@ -15,7 +15,7 @@
 2. [Follow these steps to setup the enviroment](#2-follow-these-steps-to-setup-the-enviroment)
 3. [Setup enviroment variables for easy commands](#3-setup-enviroment-variables-for-easy-commands)
 4. [Install Magento 2 & Sample Data](#4-install-magento-2-sample-data)
-5. [Extra optimizations](#4-install-magento-2-sample-data)
+5. [Extra optimizations](#5-extra-optimizations)
 
 # 1. Pre-Requistices
 
