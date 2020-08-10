@@ -204,22 +204,24 @@ Now you should have a fully working Magento 2 instance with sample data
 - This causes half the shards to be unassigned and cluster health to be yellow.
 - Use these commands to set default replica configuration to 0 for current and all future indexes.
 ```
-# Replica setting for all new template
+# Replica setting for all new index
+
 curl -XPUT "localhost:9200/_template/default_template" -H 'Content-Type: application/json' -d'
 {
- 	"index_patterns": ["*"],
-    "settings": {
-    	"index": {
-    		"number_of_replicas": 0
-    	}
+  "index_patterns": ["*"],
+  "settings": {
+    "index": {
+      "number_of_replicas": 0
     }
+  }
 }'
 
 # Replica setting for current index
-curl -XPUT 'localhost:9200/_settings' -H 'Content-Type: application/json' -d '
-{ 
-	"index" : { 
-		"number_of_replicas" : 0 
-	} 
+
+curl -XPUT 'localhost:9200/_settings' -H 'Content-Type: application/json' -d'
+{
+  "index" : {
+    "number_of_replicas" : 0
+  }
 }'
 ```
