@@ -81,6 +81,7 @@ services:
             - "80:80"
         volumes:
             - ./server/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./server/nginx/magento.sample:/etc/nginx/conf.d/magento.sample
             - /home/$user/html/magento:/var/www/html/magento
         depends_on:
             - php
@@ -94,7 +95,7 @@ services:
             COMPOSER_ALLOW_SUPERUSER : 1
         volumes:
             - ./server/php/php.ini:/usr/local/etc/php/conf.d/php.ini
-            - ./server/php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+            - ./server/php/www2.conf:/usr/local/etc/php-fpm.d/www2.conf
             - /home/$user/html/magento:/var/www/html/magento    
             - /home/$user/.composer:/root/.composer
            
