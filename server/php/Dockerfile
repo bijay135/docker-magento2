@@ -29,12 +29,4 @@ RUN apt-get update && apt-get install -y \
     pcntl \
 \
 # Install composer
- && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-\
-# Install nodejs, npm and grunt-cli
- && apt-get install -y \ 
-    nodejs \
-    npm \
- && npm install -g \ 
-    npm@latest \
-    grunt-cli
+ && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=1.10.10
