@@ -7,7 +7,6 @@
 - Mysql
 - Elasticsearch
 - Redis
-- Npm, Grunt
 - Composer
 
 # Contents Overview
@@ -94,7 +93,7 @@ services:
         environment:
             COMPOSER_ALLOW_SUPERUSER : 1
         volumes:
-            - ./server/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+            - ./server/php/php.ini:/usr/local/etc/php/conf.d/php-fpm.ini
             - ./server/php/www2.conf:/usr/local/etc/php-fpm.d/www2.conf
             - /home/$user/html/magento:/var/www/html/magento    
             - /home/$user/.composer:/root/.composer
@@ -147,16 +146,12 @@ docker-compose up -d
 magento_stack="docker-compose -f $path_to_docker_magento2/docker-compose.yml"
 php_magento="docker exec -it -w /var/www/html/magento php php bin/magento"
 php_composer="docker exec -it -w /var/www/html/magento php composer"
-php_npm="docker exec -it -w /var/www/html/magento php npm"
-php_grunt="docker exec -it -w /var/www/html/magento php grunt"
 redis_cli="docker exec -it redis redis-cli"
 ```
 - Restart the computer
 - Now all the containers in magento stack can be commanded using `$magento_stack command` example `$magento_stack start`
 - Magento 2 CLI can be used using `$php_magento command` example `$php_magento setup:upgrade`
 - Composer can be used using `$php_composer command` example `$php_composer info`
-- Npm package manager can be used using `$php_npm command` example `$php_npm install`
-- Grunt can be used using `$php_grunt command` example `$php_grunt exec`
 - Redis Cli can be used using `$redis_cli command` example `$redis_cli info`
 
 # 4. Install Magento 2 & Sample Data
