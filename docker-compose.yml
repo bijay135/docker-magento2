@@ -33,7 +33,7 @@ services:
             - "3306:3306"
         environment:
             MYSQL_ROOT_PASSWORD: f4m5kyb8R34zx5a
-            MYSQL_USER: $User
+            MYSQL_USER: $user
             MYSQL_PASSWORD: 5hKh5EVswD
             MYSQL_DATABASE: magento
         volumes:
@@ -48,6 +48,7 @@ services:
             - "9200:9200"
         environment:
             ES_JAVA_OPTS: -Xms256m -Xmx256m
+            discovery.type: single-node
         volumes:
             - /usr/share/elasticsearch/data:/usr/share/elasticsearch/data
 
