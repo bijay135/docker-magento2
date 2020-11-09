@@ -3,3 +3,5 @@
 [mysqld]
 innodb_buffer_pool_size = 1G
 max_allowed_packet = 1G
+skip-mysqlx
+skip-log-bin
