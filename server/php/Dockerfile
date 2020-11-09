@@ -1,7 +1,8 @@
-FROM php:7.2-fpm
+FROM php:7.4-fpm
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
+    sudo \ 
     libfreetype6-dev \ 
     libicu-dev \ 
     libjpeg62-turbo-dev \ 
@@ -10,23 +11,26 @@ RUN apt-get update && apt-get install -y \
     libxslt1-dev \ 
     sendmail-bin \ 
     sendmail \ 
-    sudo \
+    libzip-dev \ 
+    libonig-dev \
 \
 # Configure the gd library
  && docker-php-ext-configure \
-    gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    gd --with-freetype --with-jpeg \
 \
 # Install required php extensions
- && docker-php-ext-install \
+ && docker-php-ext-install \    
+    dom \ 
+    gd \ 
+    intl \ 
+    mbstring \ 
+    pdo_mysql \ 
+    xsl \ 
+    zip \ 
+    soap \ 
+    bcmath \ 
+    pcntl \ 
     sockets \
-    bcmath \
-    gd \
-    intl \
-    pdo_mysql \
-    soap \
-    xsl \
-    zip \
-    pcntl \
 \
 # Install composer
  && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=1.10.10
