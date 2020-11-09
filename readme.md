@@ -110,7 +110,7 @@ services:
             MYSQL_DATABASE: magento
         volumes:
             - /var/lib/mysql:/var/lib/mysql
-            - ./server/mysql/my.cnf:/etc/mysql/my.cnf
+            - ./server/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
 
     elasticsearch:
         image: elasticsearch:6.8.0
