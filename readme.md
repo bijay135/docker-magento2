@@ -93,7 +93,7 @@ services:
         environment:
             COMPOSER_ALLOW_SUPERUSER : 1
         volumes:
-            - ./server/php/php.ini:/usr/local/etc/php/conf.d/php-fpm.ini
+            - ./server/php/php-fpm.ini:/usr/local/etc/php/conf.d/php-fpm.ini
             - ./server/php/www2.conf:/usr/local/etc/php-fpm.d/www2.conf
             - /home/$user/html/magento:/var/www/html/magento    
             - /home/$user/.composer:/root/.composer
