@@ -40,6 +40,8 @@ services:
             - /var/lib/mysql:/var/lib/mysql
             - ./server/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
         command: --default-authentication-plugin=mysql_native_password
+        cap_add:
+            - SYS_NICE
 
     elasticsearch:
         image: elasticsearch:7.6.2
