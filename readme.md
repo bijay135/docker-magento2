@@ -2,41 +2,51 @@
 
 # Technologies Used
 - Docker, Docker-Compose
+- Composer
 - Nginx
 - PHP
 - Mysql
 - Elasticsearch
 - Redis
-- Composer
 
 # Contents Overview
 1. [Pre-Requistices](#1-pre-requistices)
 2. [Follow these steps to setup the enviroment](#2-follow-these-steps-to-setup-the-enviroment)
 3. [Setup enviroment variables for easy commands](#3-setup-enviroment-variables-for-easy-commands)
 4. [Install Magento 2](#4-install-magento-2)
-5. [Finalize permissions and setup](#5-finalize-permissions-and-setup)
+5. [Finalize setup](#5-finalize-setup)
 6. [Extra optimizations](#6-extra-optimizations)
 
 # 1. Pre-Requistices
 
 ## Create folders in host that will be mounted to docker containers
-- Replace the `$user` with your current user
 ```
-sudo mkdir -p /home/$user/html/magento
-sudo mkdir -p /home/$user/.composer
+sudo mkdir -p /home/$USER/html/magento
+sudo mkdir -p /home/$USER/.composer
 sudo mkdir -p /var/lib/mysql
 sudo mkdir -p /var/lib/redis
 sudo mkdir -p /usr/share/elasticsearch/data
 ```
 
-## Set proper folder permissions
-- Replace the `$user` with your current user
-- Elasticsearch data needs `$user` as owner and group, `1000` will be resolved to current system user
+## Configure proper permissions
+- Add current user to `www-data` group which will allow permissions to be shared
 ```
-sudo chown -R 1000:1000 /usr/share/elasticsearch/data
-sudo chown -R www-data:www-data /home/$user/html/magento
+sudo usermod -aG www-data $USER
+```
+- Set default user, group and permissions for folders
+```
+sudo chown -R www-data:www-data /home/$USER/html/magento
+sudo chmod -R 2775 /home/$USER/html/magento
 
-sudo chmod -R 2775 magento /home/$user/html/magento
+sudo chmod -R 2775 /home/$USER/.composer
+
+sudo chown -R $USER:$USER /usr/share/elasticsearch/data
+```
+- Create `composer.sh` script to allow group write permission by default for composer commands as root
+```
+cd /home/$USER/html/magento
+
+echo $'#!/bin/bash \numask 0002 \ncomposer $1' > composer.sh && chmod +x composer.sh
 ```
 
 ## Redis/Elasticsearch optimization
@@ -58,7 +68,7 @@ echo never > /sys/kernel/mm/transparent_hugepage/enabled
 ```
 sudo chmod +x /etc/rc.local
 ```
-- start `rc.local` service and verify that is active
+- Start `rc.local` service and verify that is active
 ```
 sudo systemctl start rc.local
 
@@ -83,12 +93,12 @@ docker-compose up -d
 ```
 
 # 3. Setup enviroment variables for easy commands
-- Open `/etc/enviroment` in editor and add the following
+- Open `/etc/enviroment` in editor as sudo and add the following
 - Replace `$path_to_docker_magento2` with correct path
 ```
 magento_stack="docker-compose -f $path_to_docker_magento2/docker-compose.yml"
 php_magento="docker exec -it -w /var/www/html/magento php bin/magento"
-php_composer="docker exec -it -w /var/www/html/magento php composer"
+php_composer="docker exec -it -w /var/www/html/magento php ./composer.sh"
 redis_cli="docker exec -it redis redis-cli"
 ```
 - Restart the pc
@@ -102,13 +112,13 @@ redis_cli="docker exec -it redis redis-cli"
 ## Existing project
 
 ### Clone your project and install packages
-- Replace `$user` with your current user and `$repository_link` with your project link
+- Replace `$repository_link` with your project link
 ```
-cd /home/$user/html/magento
+cd /home/$USER/html/magento
 
 git clone $repository_link .
 
-composer install
+$php_composer install
 ```
 - Enter the composer access keys from magento marketplace and save it
 
@@ -121,16 +131,16 @@ composer install
 ## Fresh instance
 
 ### Create new composer project and install packages
-- Replace `$user` with your current user
-```
-cd /home/$user/html/magento
-```
 - For community edition
 ```
+cd /home/$USER/html/magento
+
 $php_composer create-project --repository=https://repo.magento.com/ magento/project-community-edition .
 ```
 - For enterprise edttion
 ```
+cd /home/$USER/html/magento
+
 $php_composer create-project --repository=https://repo.magento.com/ magento/project-enterprise-edition .
 ```
 - Enter the composer access keys from magento marketplace and save it
@@ -145,20 +155,12 @@ $php_composer create-project --repository=https://repo.magento.com/ magento/proj
 $php_magento sampledata:deploy
 ```
 
-# 5. Finalize permissions and setup
-
-## Finalize permissions
-- Replace `$user` with your current user
-```
-cd /home/$user/html/magento
-
-sudo find . -type d -exec chmod g+ws {} +
-sudo find . -type f -exec chmod g+w {} +
-```
-
-## Finalize setup
+# 5. Finalize setup
+- Run the commands to finish up installation
 ```
 $php_magento setup:upgrade
+$php_magento indexer:reindex
+$php_magento cache:flush
 ```
 Now you should have a fully working Magento 2 instance
 
