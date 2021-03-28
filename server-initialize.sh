@@ -9,7 +9,7 @@ echo "Running server initialize script"
 
 # Create folders in host that will be mounted to docker containers
 echo -e "\nCreating folders in host"
-mkdir -p /var/www/html/magento
+mkdir -p /var/www/html/$DOMAIN_NAME
 mkdir -p /home/$SUDO_USER/.composer
 mkdir -p /var/lib/mysql
 mkdir -p /var/lib/redis
@@ -20,8 +20,8 @@ echo -e "Created all folders in host"
 # Configure proper permissions
 echo -e "\nConfiguring proper permissions"
 usermod -aG www-data $SUDO_USER
-chown www-data:www-data /var/www/html/magento
-chmod 2775 /var/www/html/magento
+chown www-data:www-data /var/www/html/$DOMAIN_NAME
+chmod 2775 /var/www/html/$DOMAIN_NAME
 chown $SUDO_USER:www-data /home/$SUDO_USER/.composer
 chmod 2775 /home/$SUDO_USER/.composer
 chown $SUDO_USER:$SUDO_USER /usr/share/elasticsearch/data
@@ -78,15 +78,6 @@ if ! cat /etc/environment | grep -q "Magento stack" ; then
 	echo "Configured host enviroment"
 else
 	echo -e "\nHost enviroment already configured, skipping"
-fi
-
-# Update project folder to domain name
-if [ -d "/var/www/html/magento" ] ; then
-	echo -e "Updating project folder to domain name"
-	mv /var/www/html/magento /var/www/html/$DOMAIN_NAME
-	echo "Project folder updated to domain name"
-else
-	echo -e "\nProject folder already updated to domain name, skipping"
 fi
 
 # Create dummy certificates and download recommended ssl paramaters
