@@ -71,7 +71,7 @@ if ! cat /etc/environment | grep -q "Magento stack" ; then
 	# Magento stack
 	magento_stack="docker-compose -f $PWD/docker-compose.yml -f $PWD/docker-compose.server.yml"
 	php_magento="docker exec -it -u www-data -w /var/www/html/magento php bin/magento"
-	php_composer="docker exec -it -u www-data -w /var/www/html/magento php bash -ic $@ -- composer"
+	php_composer="docker exec -it -u www-data -w /var/www/html/magento php bash -ic \$@ -- composer"
 	redis_cli="docker exec -it redis redis-cli"
 	rabbitmq_ctl="docker exec -it rabbitmq rabbitmqctl"
 	EOS
