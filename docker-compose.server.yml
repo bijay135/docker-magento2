@@ -1,0 +1,54 @@
+version: '3.7'
+
+services:
+    nginx:
+        ports:
+            - "443:443"
+        environment:
+            NGINX_ENVSUBST_TEMPLATE_SUFFIX: .server
+            DOMAIN_NAME: $DOMAIN_NAME
+        volumes:
+            - ./nginx/default.conf.server:/etc/nginx/templates/default.conf.server
+            - /var/www/html/$DOMAIN_NAME:/var/www/html/magento
+            - /etc/letsencrypt:/etc/letsencrypt
+        restart: unless-stopped
+        
+    php:
+        volumes:
+            - ./php/www2.conf.server:/usr/local/etc/php-fpm.d/www2.conf
+            - /var/www/html/$DOMAIN_NAME:/var/www/html/magento
+        restart: unless-stopped
+
+    cron:
+        build: ./cron
+        image: php:7.4-cron
+        container_name: cron
+        volumes:
+            - ./cron/php-cli.ini:/usr/local/etc/php/conf.d/php-cli.ini
+            - /var/www/html/$DOMAIN_NAME:/var/www/html/magento
+        init: true
+        entrypoint: /bin/bash
+        command: -c "rsyslogd && cron && tail -f /var/log/syslog"
+        restart: unless-stopped
+
+    mysql:
+        restart: unless-stopped
+
+    elasticsearch:
+        restart: unless-stopped
+
+    redis:
+        restart: unless-stopped
+
+    rabbitmq:
+        image: rabbitmq:3.8.14-management
+        container_name: rabbitmq
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+        environment:
+            RABBITMQ_DEFAULT_USER: $RABBITMQ_DEFAULT_USER
+            RABBITMQ_DEFAULT_PASS: $RABBITMQ_DEFAULT_PASS
+        volumes:
+            - /var/lib/rabbitmq:/var/lib/rabbitmq
+        restart: unless-stopped
