@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 
 services:
     nginx:
@@ -7,24 +7,18 @@ services:
         ports:
             - "80:80"
         volumes:
-            - ./server/nginx/default.conf:/etc/nginx/conf.d/default.conf
-            - ./server/nginx/magento.sample:/etc/nginx/conf.d/magento.sample
-            - /home/$user/html/magento:/var/www/html/magento
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./nginx/magento.sample:/etc/nginx/conf.d/magento.sample
         depends_on:
             - php
-            - mysql
         
     php:
-        build: ./server/php
-        image: magento-php:7.4-fpm
+        build: ./php
+        image: php:7.4-magento
         container_name: php
-        environment:
-            COMPOSER_ALLOW_SUPERUSER : 1
         volumes:
-            - ./server/php/php-fpm.ini:/usr/local/etc/php/conf.d/php-fpm.ini
-            - ./server/php/www2.conf:/usr/local/etc/php-fpm.d/www2.conf
-            - /home/$user/html/magento:/var/www/html/magento    
-            - /home/$user/.composer:/root/.composer
+            - ./php/php-fpm.ini:/usr/local/etc/php/conf.d/php-fpm.ini
+            - /home/$HOST_USER/.composer:/var/www/.composer
            
     mysql:
         image: mysql:8.0.22
@@ -32,13 +26,13 @@ services:
         ports: 
             - "3306:3306"
         environment:
-            MYSQL_ROOT_PASSWORD: f4m5kyb8R34zx5a
-            MYSQL_USER: $user
-            MYSQL_PASSWORD: 5hKh5EVswD
-            MYSQL_DATABASE: magento
+            MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+            MYSQL_USER: $MYSQL_USER
+            MYSQL_PASSWORD: $MYSQL_PASSWORD
+            MYSQL_DATABASE: $MYSQL_DATABASE
         volumes:
+            - ./mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
             - /var/lib/mysql:/var/lib/mysql
-            - ./server/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
         command: --default-authentication-plugin=mysql_native_password
         cap_add:
             - SYS_NICE
@@ -49,7 +43,7 @@ services:
         ports: 
             - "9200:9200"
         environment:
-            ES_JAVA_OPTS: -Xms256m -Xmx256m
+            ES_JAVA_OPTS: $ES_JAVA_OPTS
             discovery.type: single-node
         volumes:
             - /usr/share/elasticsearch/data:/usr/share/elasticsearch/data
