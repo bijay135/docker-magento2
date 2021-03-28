@@ -1,122 +1,113 @@
-# Magento 2 development enviroment under Docker
+# Magento 2.4 environment under Docker
 
 # Technologies Used
-- Docker, Docker-Compose
-- Composer
+- Docker / Docker-Compose
 - Nginx
-- PHP
+- Php / Composer
+- Cron
 - Mysql
 - Elasticsearch
 - Redis
+- Rabbitmq
 
 # Contents Overview
 1. [Pre-Requistices](#1-pre-requistices)
 2. [Follow these steps to setup the enviroment](#2-follow-these-steps-to-setup-the-enviroment)
-3. [Setup enviroment variables for easy commands](#3-setup-enviroment-variables-for-easy-commands)
-4. [Install Magento 2](#4-install-magento-2)
-5. [Finalize setup](#5-finalize-setup)
-6. [Extra optimizations](#6-extra-optimizations)
+3. [Install Magento 2](#4-install-magento-2)
+4. [Finalize setup](#5-finalize-setup)
+5. [Extra optimizations](#6-extra-optimizations)
 
 # 1. Pre-Requistices
 
-## Create folders in host that will be mounted to docker containers
-```
-sudo mkdir -p /home/$USER/html/magento
-sudo mkdir -p /home/$USER/.composer
-sudo mkdir -p /var/lib/mysql
-sudo mkdir -p /var/lib/redis
-sudo mkdir -p /usr/share/elasticsearch/data
-```
-
-## Configure proper permissions
-- Add current user to `www-data` group which will allow permissions to be shared
-```
-sudo usermod -aG www-data $USER
-```
-- Set default user, group and permissions for folders
-```
-sudo chown -R www-data:www-data /home/$USER/html/magento
-sudo chmod -R 2775 /home/$USER/html/magento
-
-sudo chmod -R 2775 /home/$USER/.composer
-
-sudo chown -R $USER:$USER /usr/share/elasticsearch/data
-```
-- Create `composer.sh` script to allow group write permission by default for composer commands as root
-```
-cd /home/$USER/html/magento
-
-echo $'#!/bin/bash \numask 0002 \ncomposer $1' > composer.sh && chmod +x composer.sh
-```
-
-## Redis/Elasticsearch optimization
-- Open `/etc/sysctl.conf` and add these lines at the end
-```
-# Elasticsearch Compatibility
-vm.max_map_count=262144
-
-# Redis Compatibility
-net.core.somaxconn=1024
-vm.overcommit_memory=1
-```
-- Create a new file `/etc/rc.local` and add this
-```
-#!/bin/bash
-echo never > /sys/kernel/mm/transparent_hugepage/enabled
-```
-- Make `rc.local` file executable
-```
-sudo chmod +x /etc/rc.local
-```
-- Start `rc.local` service and verify that is active
-```
-sudo systemctl start rc.local
-
-sudo systemctl status rc.local
-```
-
-## Install Docker and Docker-Compose
-
-## Get the composer access keys from Magento Marketplace
-[Composer access keys](https://devdocs.magento.com/guides/v2.4/install-gde/prereq/connect-auth.html)
+- Install docker / docker-compose
+- Get the composer access keys from magento marketplace
+  [magento devdocs](https://devdocs.magento.com/guides/v2.4/install-gde/prereq/connect-auth.html)
+- Install mysql-client optionally to ease database admin tasks
+- Install certbot for installation on server
 
 # 2. Follow these steps to setup the enviroment
-
-## `git clone` this repository and cd into it
-
-## open docker-compose.yml in editor
-- Update the `$user` variable with your own user, change mysql `root` and `user` password if required and save the file
-
-## Run this command to build images and start the containers
+- Clone this repository using `git clone` and `cd` into it
+- Initilization can be done either for [local](#local-initialize) or [server](#server-initialize)
+- Both of these scripts will do the following tasks, check for specific comparison in table below
 ```
-docker-compose up -d
+- Create folders in host that will be mounted to docker containers
+- Configure proper permissions
+- Optimize host for elasticsearch / redis
+- Configure docker-compose environment file
+- Configure host environment for frequent commands
 ```
 
-# 3. Setup enviroment variables for easy commands
-- Open `/etc/enviroment` in editor as sudo and add the following
-- Replace `$path_to_docker_magento2` with correct path
-```
-magento_stack="docker-compose -f $path_to_docker_magento2/docker-compose.yml"
-php_magento="docker exec -it -w /var/www/html/magento php bin/magento"
-php_composer="docker exec -it -w /var/www/html/magento php ./composer.sh"
-redis_cli="docker exec -it redis redis-cli"
-```
-- Restart the pc
-- Now all the containers in magento stack can be commanded using `$magento_stack command` example `$magento_stack start`
-- Magento 2 CLI can be used using `$php_magento command` example `$php_magento setup:upgrade`
-- Composer can be used using `$php_composer command` example `$php_composer info`
-- Redis Cli can be used using `$redis_cli command` example `$redis_cli info`
+| **subject**                | **local initialize**             | **server initialize**       |
+|----------------------------|----------------------------------|-----------------------------|
+| **mage_root**              | /home/$HOST_USER/html/magento    |  /var/www/html/$DOMAIN_NAME |
+| **override compose file**  | docker-compose.local.yml         |  docker-compose.server.yml  |
+| **elasticsearch memory**   | 256 mb                           |  1 gb                       |
+| **cron / rabbitmq**        | optional, add manually if needed |  installed                  |
+| **nginx sever_name / ssl** | localhost / no ssl               |  $DOMAIN_NAME / with ssl    |
+| **php fpm pool max child** |  10                              |  25                         |
+| **auto restart policy**    |  never                           |  unless-stopped             |
 
-# 4. Install Magento 2
+## Local initialize
+- Run the script
+```
+sudo ./local-initialize.sh
+```
+
+## Server initialize
+- Replace `$domain_name` with your domain name without `protocol` and run the script
+```
+sudo ./server-initialize.sh $domain_name
+```
+
+## Enviroment variables for frequent commands
+- Restart the pc to apply enviroment variables set by initilization script
+- All containers in magento stack use `$magento_stack command` example `$magento_stack ps`
+- Magento 2 cli use `$php_magento command` example `$php_magento setup:upgrade`
+- Composer use  `$php_composer command` example `$php_composer info`
+- Redis cli use `$redis_cli command` example `$redis_cli info`
+- Rabbitmq cli use `rabbitmq_ctl command` example `$rabbitmq_ctl info`
+
+## Commands for other services
+- Nginx use `docker exec` example `docker exec -it nginx nginx -s reload`
+- Mysql cli use `docker exec` for example `docker exec -it mysql mysql -u $user -p`
+- Mysql admin tasks use host based `mysql-client` for example `mysqldump -h mysql -u $user -p`
+- Elasticsearch use `curl localhost:port` example `curl localhost:9200/_cat/health?pretty`
+
+## Up the docker enviromnment
+- Edit the `.env` file set by initilization script and make any changes if required
+- Run the command to build images and start the containers
+```
+$magento_stack up -d
+```
+- Run this command after previous step finishes to check if all containers are up and running
+```
+$magento_stack ps
+```
+
+## Generate ssl certificates and setup renew hook for installation on server
+- Clear the dummy certificates set by initilization script
+```
+sudo rm -r /etc/letsencrypt/live/*
+```
+- Run the command to generate live cerificates
+```
+ sudo certbot certonly --webroot -w /var/www/html/$domain_name -d $domain_name
+```
+- For deploy hook open `/etc/letsencrypt/cli.ini` and update as follows
+```
+deploy-hook = docker exec -it nginx nginx -s reload
+```
+
+# 3. Install Magento 2
+- Cd into your `mage_root` in host
+- Installation can be done either for [existing](#existing-project) or [new](#new-project) project
 
 ## Existing project
 
 ### Clone your project and install packages
-- Replace `$repository_link` with your project link
+- Replace `$project_repository_link` with your project link
 ```
-cd /home/$USER/html/magento
-
-git clone $repository_link .
+git clone $project_repository_link .
 
 $php_composer install
 ```
@@ -125,29 +116,26 @@ $php_composer install
 ### Configure existing enviroment
 - Copy over existing `env.php` and update services credentals
 
-### Install existing data
+### Install existing data and media
 - Clone your existing database and import it
+- Clone your existing media
 
-## Fresh instance
+## New project
 
 ### Create new composer project and install packages
 - For community edition
 ```
-cd /home/$USER/html/magento
-
 $php_composer create-project --repository=https://repo.magento.com/ magento/project-community-edition .
 ```
 - For enterprise edttion
 ```
-cd /home/$USER/html/magento
-
 $php_composer create-project --repository=https://repo.magento.com/ magento/project-enterprise-edition .
 ```
 - Enter the composer access keys from magento marketplace and save it
 
 ### Configure new enviroment
-- Browse `http://localhost` in the browser and magento setup wizard will begin
-- Finish the wizard to configure magento enviroment
+- Browse `localhost` or `https://$domain_name` in the browser depending on installation on local or server
+- Magento setup wizard will begin, finish the wizard to configure magento enviroment
 
 ### Install sample data
 - Use this command to deploy sample data
@@ -155,16 +143,16 @@ $php_composer create-project --repository=https://repo.magento.com/ magento/proj
 $php_magento sampledata:deploy
 ```
 
-# 5. Finalize setup
+# 4. Finalize setup
 - Run the commands to finish up installation
 ```
 $php_magento setup:upgrade
 $php_magento indexer:reindex
 $php_magento cache:flush
 ```
-Now you should have a fully working Magento 2 instance
+- Now you should have a fully working Magento 2 instance
 
-# 6. Extra optimizations
+# 5. Extra optimizations
 
 ## Elasticsearch replicas configuration
 - Elasticsearch tries to create an additional replica of each indexes by default on second node, since local development will only have one node this will never succeed.
