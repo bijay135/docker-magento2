@@ -1,35 +1,31 @@
 FROM php:7.4-fpm
 
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    sudo \ 
-    libfreetype6-dev \ 
-    libicu-dev \ 
-    libjpeg62-turbo-dev \ 
-    libmcrypt-dev \ 
-    libpng-dev \ 
-    libxslt1-dev \ 
-    sendmail-bin \ 
-    sendmail \ 
-    libzip-dev \ 
-    libonig-dev \
+# Install required packages
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    sudo \
+    unzip \
 \
-# Configure the gd library
- && docker-php-ext-configure \
-    gd --with-freetype --with-jpeg \
+# Configure umask module for pam
+ && echo "\n# Load pam_umask module\nsession optional pam_umask.so" >> /etc/pam.d/common-session \
+ && echo "\n# Load pam_umask module\nsession optional pam_umask.so" >> /etc/pam.d/common-session-noninteractive \
+\
+# Configure www-data user
+ && chsh -s /bin/bash www-data && chown :www-data /var/www && chmod g+w /var/www \
+ && usermod -c "umask=002" www-data && su www-data -c 'echo "umask 002" >> /var/www/.bashrc' \
+\
+# Configure docker php extension installer
+ && curl -L https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions \
+    -o /usr/local/bin/install-php-extensions && chmod +x /usr/local/bin/install-php-extensions \
 \
 # Install required php extensions
- && docker-php-ext-install \    
-    dom \ 
-    gd \ 
-    intl \ 
-    mbstring \ 
-    pdo_mysql \ 
-    xsl \ 
-    zip \ 
-    soap \ 
-    bcmath \ 
-    pcntl \ 
+ && install-php-extensions \
+    bcmath \
+    gd \
+    intl \
+    pdo_mysql \
+    soap \
+    xsl \
+    zip \
     sockets \
 \
 # Install composer
