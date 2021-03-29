@@ -51,7 +51,7 @@ if ! cat /etc/sysctl.conf | grep -q "Redis optimization" ; then
 else
 	echo "Redis already optimized skipping"
 fi
-systemctl -p
+sysctl -p
 echo "Host optimization complete"
 
 # Configure docker-compose environment file
