@@ -41,7 +41,6 @@ if ! cat /etc/sysctl.conf | grep -q "Redis compatibility" ; then
 fi
 if [ ! -f "/etc/rc.local" ] ; then
 	cat > /etc/rc.local <<- EOS
-
 	#!/bin/bash
 	echo never > /sys/kernel/mm/transparent_hugepage/enabled
 	EOS
