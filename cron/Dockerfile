@@ -12,8 +12,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
  && echo "\n# Load pam_umask module\nsession optional pam_umask.so" >> /etc/pam.d/common-session-noninteractive \
 \
 # Configure www-data user
- && chsh -s /bin/bash www-data && chown :www-data /var/www && chmod g+w /var/www \
- && usermod -c "umask=002" www-data && su www-data -c 'echo "umask 002" >> /var/www/.bashrc' \
+ && chsh -s /bin/bash www-data && usermod -c "umask=002" www-data \
 \
 # Configure docker php extension installer
  && curl -L https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions \
@@ -29,6 +28,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     xsl \
     zip \
     sockets \
+    pcntl \
 \
 # Configure cron
  && echo "* * * * * www-data /usr/local/bin/php /var/www/html/magento/bin/magento cron:run 2>&1 | grep -v \"Ran jobs by schedule\" >> /var/www/html/magento/var/log/magento.cron.log" > /etc/cron.d/magento \
