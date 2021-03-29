@@ -28,39 +28,48 @@ chown $SUDO_USER:$SUDO_USER /usr/share/elasticsearch/data
 echo -e "Proper permissions configured"
 
 # Optimize host for elasticsearch / redis
-echo -e "\nOptimizing host for elasticsearch / redis"
-if ! cat /etc/sysctl.conf | grep -q "Elasticsearch compatibility" ; then
+echo -e "\nStarting host optimization"
+if ! cat /etc/sysctl.conf | grep -q "Elasticsearch optimization" ; then
+	echo "Optimizing host for elasticsearch"
 	cat >> /etc/sysctl.conf <<- EOS
 
-	# Elasticsearch compatibility
+	# Elasticsearch optimization
 	vm.max_map_count=262144
 	EOS
+else
+	echo "Elasticsearch already optimized, skipping"
 fi
-if ! cat /etc/sysctl.conf | grep -q "Redis compatibility" ; then
+if ! cat /etc/sysctl.conf | grep -q "Redis optimization" ; then
+	echo "Optimizing host for redis"
 	cat >> /etc/sysctl.conf <<- EOS
 
-	# Redis compatibility
+	# Redis optimization
 	net.core.somaxconn=1024
 	vm.overcommit_memory=1
 	EOS
-fi
-if [ ! -f "/etc/rc.local" ] ; then
 	cat > /etc/rc.local <<- EOS
 	#!/bin/bash
 	echo never > /sys/kernel/mm/transparent_hugepage/enabled
 	EOS
 	chmod +x /etc/rc.local
 	systemctl start rc-local
+else
+	echo "Redis already optimized skipping"
 fi
-echo "Host redis / elasticsearch optimized"
+systemctl -p
+echo "Host optimization complete"
 
 # Configure docker-compose environment file
-echo -e "\nConfiguring docker-compose enviroment file"
-cp -af .env.dis .env
-sed -i 's/$domain_name/'"$DOMAIN_NAME"'/g' .env
-sed -i 's/$user/'"$SUDO_USER"'/g' .env
-sed -i 's/$es_java_opts/-Xms1g -Xmx1g/g' .env
-echo "Configured docker-compose enviroment file"
+if [ ! -f ".env" ] ; then
+	echo -e "\nConfiguring docker-compose enviroment file"
+	cp -af .env.dis .env
+	sed -i 's/$domain_name/'"$DOMAIN_NAME"'/g' .env
+	sed -i 's/$user/'"$SUDO_USER"'/g' .env
+	sed -i 's/$es_java_opts/-Xms1g -Xmx1g/g' .env
+	echo "Configured docker-compose enviroment file"
+else
+	echo -e "\nEnviroment file for docker-compose already present, skipping"
+fi
 
 # Configure host environment for frequent commands
 if ! cat /etc/environment | grep -q "Magento stack" ; then
@@ -92,7 +101,7 @@ if [ ! -d "$LETSENCRYPT_PATH/live/$DOMAIN_NAME" ] ; then
 	    > "$LETSENCRYPT_PATH/ssl-dhparams.pem"
 	echo "Dummy certificates and recommended ssl paramaters created"
 else
-	echo -e "\nLive certificates already present, skipping"
+	echo -e "\nCertificates already present, skipping"
 fi
 
 echo -e "\nServer initialize script complete"
