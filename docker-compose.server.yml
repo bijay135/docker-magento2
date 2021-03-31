@@ -28,7 +28,8 @@ services:
             - /var/www/html/$DOMAIN_NAME:/var/www/html/magento
         init: true
         entrypoint: /bin/bash
-        command: -c "rsyslogd && cron && tail -f /var/log/syslog"
+        command: -c "rm -f /var/run/rsyslogd.pid && rsyslogd && cron
+                     && tail -f /var/log/syslog"
         restart: unless-stopped
 
     mysql:
