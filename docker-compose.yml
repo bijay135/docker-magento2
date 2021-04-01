@@ -21,7 +21,7 @@ services:
             - /home/$HOST_USER/.composer:/var/www/.composer
            
     mysql:
-        image: mysql:8.0.22
+        image: mariadb:10.4.17
         container_name: mysql       
         ports: 
             - "3306:3306"
@@ -33,9 +33,6 @@ services:
         volumes:
             - ./mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
             - /var/lib/mysql:/var/lib/mysql
-        command: --default-authentication-plugin=mysql_native_password
-        cap_add:
-            - SYS_NICE
 
     elasticsearch:
         image: elasticsearch:7.6.2
