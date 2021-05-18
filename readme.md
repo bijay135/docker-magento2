@@ -41,7 +41,7 @@
 |----------------------------|----------------------------------|-----------------------------|
 | **mage_root**              | /home/$HOST_USER/html/magento    |  /var/www/html/$DOMAIN_NAME |
 | **override compose file**  | docker-compose.local.yml         |  docker-compose.server.yml  |
-| **elasticsearch memory**   | 256 mb                           |  1 gb                       |
+| **elasticsearch memory**   | 256 mb                           |  512 mb                     |
 | **cron / rabbitmq**        | optional, add manually if needed |  installed                  |
 | **nginx sever_name / ssl** | localhost / no ssl               |  $DOMAIN_NAME / with ssl    |
 | **php fpm pool max child** |  10                              |  25                         |
@@ -70,7 +70,7 @@ sudo ./server-initialize.sh $domain_name
 ## Commands for other services
 - Nginx use `docker exec` example `docker exec -it nginx nginx -s reload`
 - Mysql cli use `docker exec` for example `docker exec -it mysql mysql -u $user -p`
-- Mysql admin tasks use host based `mysql-client` for example `mysqldump -h mysql -u $user -p`
+- Mysql admin tasks use host based `mysql-client` for example `mysqldump -h 127.0.0.1 -u $user -p`
 - Elasticsearch use `curl localhost:port` example `curl localhost:9200/_cat/health?pretty`
 
 ## Up the docker enviromnment

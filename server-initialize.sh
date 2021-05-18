@@ -65,7 +65,7 @@ if [ ! -f ".env" ] ; then
 	cp -af .env.dis .env
 	sed -i 's/$domain_name/'"$DOMAIN_NAME"'/g' .env
 	sed -i 's/$user/'"$SUDO_USER"'/g' .env
-	sed -i 's/$es_java_opts/-Xms1g -Xmx1g/g' .env
+	sed -i 's/$es_java_opts/-Xms512m -Xmx512m/g' .env
 	echo "Configured docker-compose enviroment file"
 else
 	echo -e "\nEnviroment file for docker-compose already present, skipping"
