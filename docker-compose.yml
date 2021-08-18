@@ -37,7 +37,8 @@ services:
             - /var/lib/mysql:/var/lib/mysql
 
     elasticsearch:
-        image: elasticsearch:7.6.2
+        build: ./elasticsearch
+        image: elasticsearch:7.6.2-analysis
         container_name: elasticsearch       
         ports: 
             - "9200:9200"
