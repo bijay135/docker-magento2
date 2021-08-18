@@ -16,6 +16,8 @@ services:
         build: ./php
         image: php:7.4-magento
         container_name: php
+        environment:
+            COMPOSER_MEMORY_LIMIT: -1
         volumes:
             - ./php/php-fpm.ini:/usr/local/etc/php/conf.d/php-fpm.ini
             - /home/$HOST_USER/.composer:/var/www/.composer
