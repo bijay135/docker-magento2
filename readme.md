@@ -39,13 +39,13 @@
 
 | **subject**                | **local initialize**             | **server initialize**       |
 |----------------------------|----------------------------------|-----------------------------|
-| **mage_root**              | /home/$HOST_USER/html/magento    |  /var/www/html/$DOMAIN_NAME |
-| **override compose file**  | docker-compose.local.yml         |  docker-compose.server.yml  |
-| **elasticsearch memory**   | 256 mb                           |  512 mb                     |
-| **cron / rabbitmq**        | optional, add manually if needed |  installed                  |
-| **nginx sever_name / ssl** | localhost / no ssl               |  $DOMAIN_NAME / with ssl    |
-| **php fpm pool max child** |  10                              |  25                         |
-| **auto restart policy**    |  never                           |  unless-stopped             |
+| **mage_root**              | /home/$HOST_USER/html/magento    | /var/www/html/$DOMAIN_NAME  |
+| **override compose file**  | docker-compose.local.yml         | docker-compose.server.yml   |
+| **elasticsearch memory**   | 256 mb                           | 512 mb                      |
+| **cron / rabbitmq**        | optional, add manually if needed | installed                   |
+| **nginx sever_name / ssl** | localhost / no ssl               | $DOMAIN_NAME / with ssl     |
+| **php fpm pool max child** | static, 6                        | static, 14                  |
+| **auto restart policy**    | never                            | unless-stopped              |
 
 ## Local initialize
 - Run the script
