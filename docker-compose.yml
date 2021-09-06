@@ -5,7 +5,7 @@ services:
         image: nginx:1.18.0
         container_name: nginx
         ports:
-            - "80:80"
+            - $HOST_PORT_NGINX_HTTP:80
         volumes:
             - ./nginx/nginx.conf:/etc/nginx/nginx.conf
             - ./nginx/magento.sample:/etc/nginx/conf.d/magento.sample
@@ -26,7 +26,7 @@ services:
         image: mariadb:10.4.17
         container_name: mysql       
         ports: 
-            - "3306:3306"
+            - $HOST_PORT_MYSQL:3306
         environment:
             MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
             MYSQL_USER: $MYSQL_USER
@@ -41,7 +41,7 @@ services:
         image: elasticsearch:7.6.2-analysis
         container_name: elasticsearch       
         ports: 
-            - "9200:9200"
+            - $HOST_PORT_ELASTICSEARCH:9200
         environment:
             ES_JAVA_OPTS: $ES_JAVA_OPTS
             discovery.type: single-node
@@ -52,7 +52,7 @@ services:
         image: redis:5.0.10
         container_name: redis       
         ports: 
-            - "6379:6379"
+            - $HOST_PORT_REDIS:6379
         volumes:
             - /var/lib/redis:/data
         sysctls:

@@ -3,7 +3,7 @@ version: '3.7'
 services:
     nginx:
         ports:
-            - "443:443"
+            - $HOST_PORT_NGINX_HTTPS:443
         environment:
             NGINX_ENVSUBST_TEMPLATE_SUFFIX: .server
             DOMAIN_NAME: $DOMAIN_NAME
@@ -45,8 +45,8 @@ services:
         image: rabbitmq:3.8.14-management
         container_name: rabbitmq
         ports:
-            - "5672:5672"
-            - "15672:15672"
+            - $HOST_PORT_RABBITMQ_AMQP:5672
+            - $HOST_PORT_RABBITMQ_MANAGEMENT:15672
         environment:
             RABBITMQ_NODENAME: $RABBITMQ_NODENAME
             RABBITMQ_DEFAULT_USER: $RABBITMQ_DEFAULT_USER
