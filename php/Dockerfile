@@ -5,13 +5,9 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     sudo \
     unzip \
 \
-# Configure umask module for pam
- && echo "\n# Load pam_umask module\nsession optional pam_umask.so" >> /etc/pam.d/common-session \
- && echo "\n# Load pam_umask module\nsession optional pam_umask.so" >> /etc/pam.d/common-session-noninteractive \
-\
 # Configure www-data user
- && chsh -s /bin/bash www-data && usermod -c "umask=002" www-data \
- && chown :www-data /var/www && chmod g+w /var/www && su www-data -c 'echo "umask 002" >> /var/www/.bashrc' \
+ && chown :www-data /var/www && chmod g+w /var/www \
+ && chsh -s /bin/bash www-data && su www-data -c 'echo "umask 002" >> /var/www/.bashrc' \
 \
 # Configure docker php extension installer
  && curl -L https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions \

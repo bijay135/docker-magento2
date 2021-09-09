@@ -7,10 +7,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     cron \
     logrotate \
 \
-# Configure umask module for pam
- && echo "\n# Load pam_umask module\nsession optional pam_umask.so" >> /etc/pam.d/common-session \
- && echo "\n# Load pam_umask module\nsession optional pam_umask.so" >> /etc/pam.d/common-session-noninteractive \
-\
 # Configure www-data user
  && chsh -s /bin/bash www-data && usermod -c "umask=002" www-data \
 \
@@ -34,5 +30,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
  && sed -i '/imklog/s/^/#/' /etc/rsyslog.conf && touch /var/log/syslog \
 \
 # Configure cron
- && echo "* * * * * www-data /usr/local/bin/php /var/www/html/magento/bin/magento cron:run 2>&1 | grep -v \"Ran jobs by schedule\" >> /var/www/html/magento/var/log/magento.cron.log" > /etc/cron.d/magento \
- && echo '\n# Disable mail\nMAILTO=""' >> /etc/crontab
+ && echo "\n# Load pam_umask module\nsession optional pam_umask.so" >> /etc/pam.d/common-session-noninteractive \
+ && echo '\n# Disable mail\nMAILTO=""' >> /etc/crontab \
+ && echo "* * * * * www-data /usr/local/bin/php /var/www/html/magento/bin/magento cron:run 2>&1 | grep -v \"Ran jobs by schedule\" >> /var/www/html/magento/var/log/magento.cron.log" > /etc/cron.d/magento
