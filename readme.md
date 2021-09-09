@@ -9,6 +9,7 @@
 - Elasticsearch
 - Redis
 - Rabbitmq
+- Node / Npm / Grunt
 
 # Contents Overview
 1. [Pre-Requistices](#1-pre-requistices)
@@ -37,15 +38,16 @@
 - Configure host environment for frequent commands
 ```
 
-| **subject**                | **local initialize**             | **server initialize**       |
-|----------------------------|----------------------------------|-----------------------------|
-| **mage_root**              | /home/$HOST_USER/html/magento    | /var/www/html/$DOMAIN_NAME  |
-| **override compose file**  | docker-compose.local.yml         | docker-compose.server.yml   |
-| **elasticsearch memory**   | 256 mb                           | 512 mb                      |
-| **cron / rabbitmq**        | optional, add manually if needed | installed                   |
-| **nginx sever_name / ssl** | localhost / no ssl               | $DOMAIN_NAME / with ssl     |
-| **php fpm pool max child** | static, 6                        | static, 14                  |
-| **auto restart policy**    | never                            | unless-stopped              |
+| **subject**                | **local initialize**             | **server initialize**            |
+|----------------------------|----------------------------------|----------------------------------|
+| **mage_root**              | /home/$HOST_USER/html/magento    | /var/www/html/$DOMAIN_NAME       |
+| **override compose file**  | docker-compose.local.yml         | docker-compose.server.yml        |
+| **elasticsearch memory**   | 256 mb                           | 512 mb                           |
+| **node / npm / grunt**     | installed                        | optional, add manually if needed |
+| **cron / rabbitmq**        | optional, add manually if needed | installed                        |
+| **nginx sever_name / ssl** | localhost / no ssl               | $DOMAIN_NAME / with ssl          |
+| **php fpm pool max child** | static, 6                        | static, 14                       |
+| **auto restart policy**    | never                            | unless-stopped                   |
 
 ## Local initialize
 - Run the script
@@ -65,7 +67,9 @@ sudo ./server-initialize.sh $domain_name
 - Magento 2 cli use `$php_magento command` example `$php_magento setup:upgrade`
 - Composer use  `$php_composer command` example `$php_composer info`
 - Redis cli use `$redis_cli command` example `$redis_cli info`
-- Rabbitmq cli use `rabbitmq_ctl command` example `$rabbitmq_ctl info`
+- Rabbitmq cli use `$rabbitmq_ctl command` example `$rabbitmq_ctl info`
+- Npm use `$node_npm command` example `$node_npm install`
+- Grunt cli use `$node_grunt command` example `$node_grunt exec`
 
 ## Commands for other services
 - Nginx use `docker exec` example `docker exec -it nginx nginx -s reload`
