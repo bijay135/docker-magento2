@@ -7,6 +7,7 @@ echo "Running local initialize script"
 echo -e "\nCreating folders in host"
 mkdir -p /home/$SUDO_USER/html/magento
 mkdir -p /home/$SUDO_USER/.composer
+mkdir -p /home/$SUDO_USER/.npm
 mkdir -p /var/lib/mysql
 mkdir -p /var/lib/redis
 mkdir -p /usr/share/elasticsearch/data
@@ -19,6 +20,8 @@ chown www-data:www-data /home/$SUDO_USER/html/magento
 chmod 2775 /home/$SUDO_USER/html/magento
 chown $SUDO_USER:www-data /home/$SUDO_USER/.composer
 chmod 2775 /home/$SUDO_USER/.composer
+chown $SUDO_USER:www-data /home/$SUDO_USER/.npm
+chmod 2775 /home/$SUDO_USER/.npm
 chown $SUDO_USER:$SUDO_USER /usr/share/elasticsearch/data
 echo -e "Proper permissions configured"
 
@@ -77,6 +80,8 @@ if ! cat /etc/environment | grep -q "Magento stack" ; then
 	php_composer="docker exec -it -u www-data -w /var/www/html/magento php bash -ic \$@ -- composer"
 	redis_cli="docker exec -it redis redis-cli"
 	rabbitmq_ctl="docker exec -it rabbitmq rabbitmqctl"
+	node_npm="docker exec -it -u www-data -w /var/www/html/magento node bash -ic \$@ -- npm"
+    node_grunt="docker exec -it -u www-data -w /var/www/html/magento node bash -ic \$@ -- grunt"
 	EOS
 	echo "Configured host enviroment"
 else

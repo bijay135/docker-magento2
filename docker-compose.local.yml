@@ -10,3 +10,13 @@ services:
         volumes:
             - ./php/www2.conf:/usr/local/etc/php-fpm.d/www2.conf
             - /home/$HOST_USER/html/magento:/var/www/html/magento
+
+    node:
+        build: ./node
+        image: node:16.8.0-magento
+        container_name: node
+        volumes:
+            - /home/$HOST_USER/html/magento:/var/www/html/magento
+            - /home/$HOST_USER/.npm:/var/www/.npm
+        stdin_open: true
+        tty: true
