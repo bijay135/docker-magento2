@@ -1,17 +1,7 @@
 FROM php:7.4-cli
 
-# Install required packages
-RUN apt-get update && apt-get install --no-install-recommends -y \
-    sudo \
-    rsyslog \
-    cron \
-    logrotate \
-\
-# Configure www-data user
- && chsh -s /bin/bash www-data && usermod -c "umask=002" www-data \
-\
 # Configure docker php extension installer
- && curl -L https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions \
+RUN curl -L https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions \
     -o /usr/local/bin/install-php-extensions && chmod +x /usr/local/bin/install-php-extensions \
 \
 # Install required php extensions
@@ -25,6 +15,16 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     zip \
     sockets \
     pcntl \
+\
+# Install required packages
+ && apt-get update && apt-get install --no-install-recommends -y \
+    sudo \
+    rsyslog \
+    cron \
+    logrotate \
+\
+# Configure www-data user
+ && chsh -s /bin/bash www-data && usermod -c "umask=002" www-data \
 \
 # Configure rsyslog
  && sed -i '/imklog/s/^/#/' /etc/rsyslog.conf && touch /var/log/syslog \

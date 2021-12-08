@@ -10,17 +10,26 @@ services:
             - ./nginx/nginx.conf:/etc/nginx/nginx.conf
             - ./nginx/magento.sample:/etc/nginx/conf.d/magento.sample
         depends_on:
-            - php
+            - fpm
         
-    php:
-        build: ./php
-        image: php:7.4-magento
-        container_name: php
+    fpm:
+        build: ./fpm
+        image: magento_php:7.4-fpm
+        container_name: fpm
+        volumes:
+            - ./fpm/php-fpm.ini:/usr/local/etc/php/conf.d/php-fpm.ini
+
+    cli:
+        build: ./cli
+        image: magento_php:7.4-cli
+        container_name: cli
         environment:
             COMPOSER_MEMORY_LIMIT: -1
         volumes:
-            - ./php/php-fpm.ini:/usr/local/etc/php/conf.d/php-fpm.ini
+            - ./cli/php-cli.ini:/usr/local/etc/php/conf.d/php-cli.ini
             - /home/$HOST_USER/.composer:/var/www/.composer
+            - /home/$HOST_USER/.npm:/var/www/.npm
+        tty: true
            
     mysql:
         image: mariadb:10.4.17
@@ -38,7 +47,7 @@ services:
 
     elasticsearch:
         build: ./elasticsearch
-        image: elasticsearch:7.6.2-analysis
+        image: magento_elasticsearch:7.6.2
         container_name: elasticsearch       
         ports: 
             - $HOST_PORT_ELASTICSEARCH:9200

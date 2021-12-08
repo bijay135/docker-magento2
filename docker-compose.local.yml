@@ -6,17 +6,11 @@ services:
             - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
             - /home/$HOST_USER/html/magento:/var/www/html/magento
     
-    php:
+    fpm:
         volumes:
-            - ./php/www2.conf:/usr/local/etc/php-fpm.d/www2.conf
+            - ./fpm/www2.conf:/usr/local/etc/php-fpm.d/www2.conf
             - /home/$HOST_USER/html/magento:/var/www/html/magento
 
-    node:
-        build: ./node
-        image: node:16.8.0-magento
-        container_name: node
+    cli:
         volumes:
             - /home/$HOST_USER/html/magento:/var/www/html/magento
-            - /home/$HOST_USER/.npm:/var/www/.npm
-        stdin_open: true
-        tty: true

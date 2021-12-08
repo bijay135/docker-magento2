@@ -13,15 +13,20 @@ services:
             - /etc/letsencrypt:/etc/letsencrypt
         restart: unless-stopped
         
-    php:
+    fpm:
         volumes:
-            - ./php/www2.conf.server:/usr/local/etc/php-fpm.d/www2.conf
+            - ./fpm/www2.conf.server:/usr/local/etc/php-fpm.d/www2.conf
+            - /var/www/html/$DOMAIN_NAME:/var/www/html/magento
+        restart: unless-stopped
+
+    cli:
+        volumes:
             - /var/www/html/$DOMAIN_NAME:/var/www/html/magento
         restart: unless-stopped
 
     cron:
         build: ./cron
-        image: php:7.4-cron
+        image: magento_php:7.4-cron
         container_name: cron
         volumes:
             - ./cron/php-cli.ini:/usr/local/etc/php/conf.d/php-cli.ini
