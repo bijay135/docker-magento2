@@ -29,6 +29,7 @@ services:
             - ./cli/php-cli.ini:/usr/local/etc/php/conf.d/php-cli.ini
             - /home/$HOST_USER/.composer:/var/www/.composer
             - /home/$HOST_USER/.npm:/var/www/.npm
+        stdin_open: true
         tty: true
            
     mysql:

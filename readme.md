@@ -3,13 +3,13 @@
 # Technologies Used
 - Docker / Docker-Compose
 - Nginx
-- Php / Composer
+- Php Fpm
+- Php Cli / Composer / Node / Npm / Grunt
 - Cron
 - Mysql
 - Elasticsearch
 - Redis
 - Rabbitmq
-- Node / Npm / Grunt
 
 # Contents Overview
 1. [Pre-Requistices](#1-pre-requistices)
@@ -43,7 +43,6 @@
 | **mage_root**              | /home/$HOST_USER/html/magento    | /var/www/html/$DOMAIN_NAME       |
 | **override compose file**  | docker-compose.local.yml         | docker-compose.server.yml        |
 | **elasticsearch memory**   | 256 mb                           | 512 mb                           |
-| **node / npm / grunt**     | installed                        | optional, add manually if needed |
 | **cron / rabbitmq**        | optional, add manually if needed | installed                        |
 | **nginx sever_name / ssl** | localhost / no ssl               | $DOMAIN_NAME / with ssl          |
 | **php fpm pool max child** | static, 6                        | static, 14                       |
@@ -64,12 +63,12 @@ sudo ./server-initialize.sh $domain_name
 ## Enviroment variables for frequent commands
 - Restart the pc to apply enviroment variables set by initilization script
 - All containers in magento stack use `$magento_stack command` example `$magento_stack ps`
-- Magento 2 cli use `$php_magento command` example `$php_magento setup:upgrade`
-- Composer use  `$php_composer command` example `$php_composer info`
+- Magento 2 cli use `$cli_magento command` example `$cli_magento setup:upgrade`
+- Composer use  `$cli_composer command` example `$cli_composer info`
+- Npm use `$cli_npm command` example `$cli_npm install`
+- Grunt cli use `$cli_grunt command` example `$cli_grunt exec`
 - Redis cli use `$redis_cli command` example `$redis_cli info`
 - Rabbitmq cli use `$rabbitmq_ctl command` example `$rabbitmq_ctl info`
-- Npm use `$node_npm command` example `$node_npm install`
-- Grunt cli use `$node_grunt command` example `$node_grunt exec`
 
 ## Commands for other services
 - Nginx use `docker exec` example `docker exec -it nginx nginx -s reload`
@@ -113,7 +112,7 @@ deploy-hook = docker exec -it nginx nginx -s reload
 ```
 git clone $project_repository_link .
 
-$php_composer install
+$cli_composer install
 ```
 - Enter the composer access keys from magento marketplace and save it
 
@@ -129,11 +128,11 @@ $php_composer install
 ### Create new composer project and install packages
 - For community edition
 ```
-$php_composer create-project --repository=https://repo.magento.com/ magento/project-community-edition .
+$cli_composer create-project --repository=https://repo.magento.com/ magento/project-community-edition .
 ```
 - For enterprise edttion
 ```
-$php_composer create-project --repository=https://repo.magento.com/ magento/project-enterprise-edition .
+$cli_composer create-project --repository=https://repo.magento.com/ magento/project-enterprise-edition .
 ```
 - Enter the composer access keys from magento marketplace and save it
 
@@ -144,15 +143,15 @@ $php_composer create-project --repository=https://repo.magento.com/ magento/proj
 ### Install sample data
 - Use this command to deploy sample data
 ```
-$php_magento sampledata:deploy
+$cli_magento sampledata:deploy
 ```
 
 # 4. Finalize setup
 - Run the commands to finish up installation
 ```
-$php_magento setup:upgrade
-$php_magento indexer:reindex
-$php_magento cache:flush
+$cli_magento setup:upgrade
+$cli_magento indexer:reindex
+$cli_magento cache:flush
 ```
 - Now you should have a fully working Magento 2 instance
 
