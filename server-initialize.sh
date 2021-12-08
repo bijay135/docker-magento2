@@ -11,6 +11,7 @@ echo "Running server initialize script"
 echo -e "\nCreating folders in host"
 mkdir -p /var/www/html/$DOMAIN_NAME
 mkdir -p /home/$SUDO_USER/.composer
+mkdir -p /home/$SUDO_USER/.npm
 mkdir -p /var/lib/mysql
 mkdir -p /var/lib/redis
 mkdir -p /usr/share/elasticsearch/data
@@ -24,6 +25,8 @@ chown www-data:www-data /var/www/html/$DOMAIN_NAME
 chmod 2775 /var/www/html/$DOMAIN_NAME
 chown $SUDO_USER:www-data /home/$SUDO_USER/.composer
 chmod 2775 /home/$SUDO_USER/.composer
+chown $SUDO_USER:www-data /home/$SUDO_USER/.npm
+chmod 2775 /home/$SUDO_USER/.npm
 chown $SUDO_USER:$SUDO_USER /usr/share/elasticsearch/data
 echo -e "Proper permissions configured"
 
