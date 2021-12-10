@@ -4,6 +4,7 @@
 - Docker / Docker-Compose
 - Nginx
 - Php Fpm
+- Varnish
 - Php Cli / Composer / Node / Npm / Grunt
 - Cron
 - Mysql
@@ -40,13 +41,14 @@
 
 | **subject**                | **local initialize**             | **server initialize**            |
 |----------------------------|----------------------------------|----------------------------------|
-| **mage_root**              | /home/$HOST_USER/html/magento    | /var/www/html/$DOMAIN_NAME       |
 | **override compose file**  | docker-compose.local.yml         | docker-compose.server.yml        |
-| **elasticsearch memory**   | 256 mb                           | 512 mb                           |
-| **cron / rabbitmq**        | optional, add manually if needed | installed                        |
+| **mage_root**              | /home/$HOST_USER/html/magento    | /var/www/html/$DOMAIN_NAME       |
+| **auto restart policy**    | never                            | unless-stopped                   |
 | **nginx sever_name / ssl** | localhost / no ssl               | $DOMAIN_NAME / with ssl          |
 | **php fpm pool max child** | static, 6                        | static, 14                       |
-| **auto restart policy**    | never                            | unless-stopped                   |
+| **varnish memory**         | 256 mb                           | 512 mb                           |
+| **elasticsearch memory**   | 256 mb                           | 512 mb                           |
+| **cron / rabbitmq**        | optional, add manually if needed | installed                        |
 
 ## Local initialize
 - Run the script
@@ -72,6 +74,7 @@ sudo ./server-initialize.sh $domain_name
 
 ## Commands for other services
 - Nginx use `docker exec` example `docker exec -it nginx nginx -s reload`
+- Varnish use `docker exec` example `docker exec -it varnish varnishstat`
 - Mysql cli use `docker exec` for example `docker exec -it mysql mysql -u $user -p`
 - Mysql admin tasks use host based `mysql-client` for example `mysqldump -h 127.0.0.1 -u $user -p`
 - Elasticsearch use `curl localhost:port` example `curl localhost:9200/_cat/health?pretty`
