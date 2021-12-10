@@ -61,6 +61,7 @@ echo "Host optimization complete"
 if [ ! -f ".env" ] ; then
 	echo -e "\nConfiguring docker-compose enviroment file"
 	cp -af .env.dis .env
+	sed -i 's/$varnish_size/256m/g' .env
 	sed -i 's/$domain_name/null/g' .env
 	sed -i 's/$user/'"$SUDO_USER"'/g' .env
 	sed -i 's/$es_java_opts/-Xms256m -Xmx256m/g' .env

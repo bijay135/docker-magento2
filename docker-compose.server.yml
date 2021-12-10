@@ -19,6 +19,9 @@ services:
             - /var/www/html/$DOMAIN_NAME:/var/www/html/magento
         restart: unless-stopped
 
+    varnish:
+        restart: unless-stopped
+
     cli:
         volumes:
             - /var/www/html/$DOMAIN_NAME:/var/www/html/magento
