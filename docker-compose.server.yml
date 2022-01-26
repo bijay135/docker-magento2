@@ -20,6 +20,8 @@ services:
         restart: unless-stopped
 
     varnish:
+        volumes:
+          - ./varnish/default.vcl.server:/etc/varnish/default.vcl
         restart: unless-stopped
 
     cli:

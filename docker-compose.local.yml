@@ -11,6 +11,10 @@ services:
             - ./fpm/www2.conf:/usr/local/etc/php-fpm.d/www2.conf
             - /home/$HOST_USER/html/magento:/var/www/html/magento
 
+    varnish:
+        volumes:
+          - ./varnish/default.vcl:/etc/varnish/default.vcl
+
     cli:
         volumes:
             - /home/$HOST_USER/html/magento:/var/www/html/magento

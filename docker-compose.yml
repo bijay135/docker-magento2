@@ -26,8 +26,6 @@ services:
         container_name: varnish
         environment:
           - VARNISH_SIZE=$VARNISH_SIZE
-        volumes:
-          - ./varnish/default.vcl:/etc/varnish/default.vcl
 
     cli:
         build: ./cli
