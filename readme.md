@@ -140,8 +140,7 @@ $cli_composer create-project --repository=https://repo.magento.com/ magento/proj
 - Enter the composer access keys from magento marketplace and save it
 
 ### Configure new enviroment
-- Browse `localhost` or `https://$domain_name` in the browser depending on installation on local or server
-- Magento setup wizard will begin, finish the wizard to configure magento enviroment
+- Magento web setup wizard has now been removed so follow the official devdocs to [install using cli](https://devdocs.magento.com/guides/v2.4/install-gde/composer.html#install-magento)
 
 ### Install sample data
 - Use this command to deploy sample data
