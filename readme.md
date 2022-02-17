@@ -12,6 +12,16 @@
 - Redis
 - Rabbitmq
 
+# Feature highlights
+- Created with simplicity and ease of use in mind, inspied by [meanbee/docker-magento2](https://github.com/meanbee/docker-magento2)
+- Production grade optimization done on each services
+- Permissions shared flawlessly between cli container and host using non-root mode, fixed umask and group
+- Correct project permissions pre set permanently with inheritance
+- Different setup mode for local / server with easy initilization script
+- Easy environment variables to run frequently used cli commands inside container easily
+- Docker compose files seperated precisely between local and server with a base
+- Simple env file for docker-compose to change services variables easily
+
 # Contents Overview
 1. [Pre-Requistices](#1-pre-requistices)
 2. [Follow these steps to setup the enviroment](#2-follow-these-steps-to-setup-the-enviroment)
